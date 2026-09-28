@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Mahasiswa</title>
+</head>
+<body>
+    <h1>Data Mahasiswa Berhasil Disimpan</h1>
+
+    <p>NIM   : {{ $data['nim'] }}</p>
+    <p>Nama  : {{ $data['nama'] }}</p>
+    <p>Email : {{ $data['email'] }}</p>
+    <p>Usia  : {{ $data['usia'] }} tahun</p>
+
+    <p><a href="{{ route('mahasiswa.create') }}">Isi Form Lagi</a></p>
+</body>
+</html>
