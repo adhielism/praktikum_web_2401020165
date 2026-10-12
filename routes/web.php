@@ -88,10 +88,11 @@ Route::get('/mahasiswa', function () {
             'error' => null,
         ]);
     } catch (\PDOException $e) {
+        \Log::error('Koneksi PDO gagal: ' . $e->getMessage());
         return view('mahasiswa', [
             'mahasiswa' => [],
             'nim' => null,
-            'error' => 'Koneksi database gagal: ' . $e->getMessage(),
+            'error' => 'Terjadi kesalahan pada koneksi database.',
         ]);
     }
 })->name('mahasiswa.index');
@@ -117,10 +118,11 @@ Route::get('/mahasiswa/{nim}', function ($nim) {
             'error' => null,
         ]);
     } catch (\PDOException $e) {
+        \Log::error('Koneksi PDO gagal: ' . $e->getMessage());
         return view('mahasiswa', [
             'mahasiswa' => [],
             'nim' => $nim,
-            'error' => 'Koneksi database gagal: ' . $e->getMessage(),
+            'error' => 'Terjadi kesalahan pada koneksi database.',
         ]);
     }
 })->name('mahasiswa.show');

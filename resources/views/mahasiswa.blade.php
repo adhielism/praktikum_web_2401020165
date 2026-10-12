@@ -8,7 +8,7 @@
     <h1>Data Mahasiswa</h1>
 
     @if ($error)
-        <p style="color: red"><strong>Error:</strong> {{ $error }}</p>
+        <p><strong>Error:</strong> {{ $error }}</p>
     @endif
 
     @if ($nim)
