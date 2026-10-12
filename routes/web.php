@@ -62,3 +62,65 @@ Route::post('/mahasiswa/store', function (\Illuminate\Http\Request $request) {
 
     return view('mahasiswa-hasil', ['data' => $validated]);
 })->name('mahasiswa.store');
+
+// ============================================
+// Pertemuan 5: Koneksi PDO
+// ============================================
+
+Route::get('/mahasiswa', function () {
+    try {
+        $dsn = 'mysql:host=' . env('DB_HOST') . ';port=' . env('DB_PORT') . ';dbname=' . env('DB_DATABASE') . ';charset=utf8mb4';
+        $pdo = new PDO($dsn, env('DB_USERNAME'), env('DB_PASSWORD'));
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $stmt = $pdo->prepare('
+            SELECT m.nim, m.nama, m.email, m.usia, p.nama AS nama_prodi
+            FROM mahasiswa m
+            INNER JOIN program_studi p ON m.program_studi_id = p.id
+            ORDER BY m.nim
+        ');
+        $stmt->execute();
+        $mahasiswa = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return view('mahasiswa', [
+            'mahasiswa' => $mahasiswa,
+            'nim' => null,
+            'error' => null,
+        ]);
+    } catch (\PDOException $e) {
+        return view('mahasiswa', [
+            'mahasiswa' => [],
+            'nim' => null,
+            'error' => 'Koneksi database gagal: ' . $e->getMessage(),
+        ]);
+    }
+})->name('mahasiswa.index');
+
+Route::get('/mahasiswa/{nim}', function ($nim) {
+    try {
+        $dsn = 'mysql:host=' . env('DB_HOST') . ';port=' . env('DB_PORT') . ';dbname=' . env('DB_DATABASE') . ';charset=utf8mb4';
+        $pdo = new PDO($dsn, env('DB_USERNAME'), env('DB_PASSWORD'));
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $stmt = $pdo->prepare('
+            SELECT m.nim, m.nama, m.email, m.usia, p.nama AS nama_prodi
+            FROM mahasiswa m
+            INNER JOIN program_studi p ON m.program_studi_id = p.id
+            WHERE m.nim = :nim
+        ');
+        $stmt->execute([':nim' => $nim]);
+        $mahasiswa = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return view('mahasiswa', [
+            'mahasiswa' => $mahasiswa,
+            'nim' => $nim,
+            'error' => null,
+        ]);
+    } catch (\PDOException $e) {
+        return view('mahasiswa', [
+            'mahasiswa' => [],
+            'nim' => $nim,
+            'error' => 'Koneksi database gagal: ' . $e->getMessage(),
+        ]);
+    }
+})->name('mahasiswa.show');
